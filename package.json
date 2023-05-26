@@ -1,0 +1,23 @@
+{
+  "name": "api-pat-match",
+  "version": "1.0.0",
+  "description": "API Rest para o app PatMatch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaoviitor/API-pat-match.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaoviitor/API-pat-match/issues"
+  },
+  "homepage": "https://github.com/jaoviitor/API-pat-match#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
