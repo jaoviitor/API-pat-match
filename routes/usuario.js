@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('../mysql').pool;
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
+const transporter = require('../mailer').transporter
+const nodemailer = require('nodemailer');
 
 //RETORNA TODOS OS USUÁRIOS
 router.get('/', (req, res, next) =>{
@@ -98,5 +101,35 @@ router.post('/login', (req, res, next) =>{
         })
     })
 })
+
+//RECUPERAR SENHA
+router.post('/recuperarsenha', (req, res, next) =>{
+    mysql.getConnection((error, conn) =>{
+        if (error) { return res.status(500).send({ error: error }) }
+        const query = `SELECT * FROM Usuario WHERE Email = ?`;
+        conn.query(query,[req.body.Email], (error, results, fields) =>{
+            conn.release();
+            if (error) { return res.status(500).send({ error: error }) }
+            if (results.length < 1){ //conferindo se o email está no banco
+                return res.status(401).send({ mensagem: 'Este email não está cadastrado' });
+            }
+            const prefixo = 'EAI';
+            const ramdomNum = crypto.randomInt(1000, 9999);
+            const key = prefixo + ramdomNum;
+            const now = new Date();
+            now.setHours(now.getHours() + 1); //Setando tempo de expiração do token
+            conn.query(`UPDATE Usuario SET SenhaResetToken = ?, SenhaResetExpires = ? WHERE Email = ?`,
+                    [key, now, req.body.Email],
+                    (error, results) =>{
+                        conn.release();
+                        if (error) { return res.status(500).send({ error: error })}
+                        res.status(201).send({
+                            mensagem: 'Operação realizada com sucesso!'
+                        })
+                    })
+        })
+    })
+})
+
 
 module.exports = router;
