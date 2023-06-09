@@ -113,7 +113,7 @@ router.post('/recuperarsenha', (req, res, next) =>{
             if (results.length < 1){ //conferindo se o email está no banco
                 return res.status(401).send({ mensagem: 'Este email não está cadastrado' });
             }
-            const prefixo = 'EAI';
+            const prefixo = 'PET';
             const ramdomNum = crypto.randomInt(1000, 9999);
             const key = prefixo + ramdomNum;
             const now = new Date();
@@ -122,10 +122,16 @@ router.post('/recuperarsenha', (req, res, next) =>{
                     [key, now, req.body.Email],
                     (error, results) =>{
                         conn.release();
-                        console.log(results);
                         var message = {
-                            from: "noreplay@celke.com.br"
+                            from: "noreplay@celke.com.br",
+                            to: req.body.Email,
+                            subject: "Recuperação de senha",
+                            text: `Para recuperar sua senha, digite este token na página de redefinição: ${key}`
                         }
+                        transporter.sendMail(message, (err) =>{
+                            if(err) { return res.status(400).json({ erro: true, mensagem: "Erro: Email não enviado com sucesso" })}
+                            return res.json({ erro: false, mensagem: "Email enviado com sucesso!" })
+                        });
                         if (error) { return res.status(500).send({ error: error })}
                         res.status(201).send({
                             mensagem: 'Operação realizada com sucesso!'
