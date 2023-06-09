@@ -122,6 +122,10 @@ router.post('/recuperarsenha', (req, res, next) =>{
                     [key, now, req.body.Email],
                     (error, results) =>{
                         conn.release();
+                        console.log(results);
+                        var message = {
+                            from: "noreplay@celke.com.br"
+                        }
                         if (error) { return res.status(500).send({ error: error })}
                         res.status(201).send({
                             mensagem: 'Operação realizada com sucesso!'
