@@ -5,7 +5,6 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
-const transporter = require('../mailer').transporter
 const nodemailer = require('nodemailer');
 
 //RETORNA TODOS OS USUÁRIOS
@@ -122,6 +121,14 @@ router.post('/recuperarsenha', (req, res, next) =>{
                     [key, now, req.body.Email],
                     (error, results) =>{
                         conn.release();
+                        const transporter = nodemailer.createTransport({
+                            host: "sandbox.smtp.mailtrap.io",
+                            port: 2525,
+                            auth: {
+                            user: "cc973a98c659db",
+                            pass: "c9bde3a313babf"
+                            }
+                        });
                         var message = {
                             from: "noreplay@celke.com.br",
                             to: req.body.Email,
