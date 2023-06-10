@@ -131,7 +131,7 @@ router.post('/recuperarsenha', (req, res, next) =>{
                             }
                         });
                         var message = {
-                            from: `PetMatch <noreplay@celke.com.br>`,
+                            from: `PetMatch <noreply@celke.com.br>`,
                             to: req.body.Email,
                             subject: "Recuperação de senha",
                             html: `<h1>Recupere sua senha inserindo o token na página de recuperação</h1> <p>${key}</p>`,
