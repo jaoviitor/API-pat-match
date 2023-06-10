@@ -122,23 +122,22 @@ router.post('/recuperarsenha', (req, res, next) =>{
                     (error, results) =>{
                         conn.release();
                         const transporter = nodemailer.createTransport({
-                            name: 'noreply@celke.com.br',
                             host: "sandbox.smtp.mailtrap.io",
                             port: 2525,
-                            secure: false, //true para port 465, false para outras ports
+                            secure: true, //true para port 465, false para outras ports
                             auth: {
-                            user: "cc973a98c659db",
-                            pass: "c9bde3a313babf"
+                                user: "cc973a98c659db",
+                                pass: "c9bde3a313babf"
                             }
                         });
-                        var message = {
+                        var mailOptions = {
                             from: `PetMatch <noreply@celke.com.br>`,
                             to: req.body.Email,
                             subject: "Recuperação de senha",
                             html: `<h1>Recupere sua senha inserindo o token na página de recuperação</h1> <p>${key}</p>`,
                             text: `Para recuperar sua senha, digite este token na página de redefinição: ${key}`
                         }
-                        transporter.sendMail(message, (err) =>{
+                        transporter.sendMail(mailOptions, (err) =>{
                             if(err) { return res.status(400).json({ erro: true, mensagem: "Erro: Email não enviado com sucesso" })}
                             return res.json({ erro: false, mensagem: "Email enviado com sucesso!" })
                         });
