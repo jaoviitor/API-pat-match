@@ -122,6 +122,7 @@ router.post('/recuperarsenha', (req, res, next) =>{
                     (error, results) =>{
                         conn.release();
                         const transporter = nodemailer.createTransport({
+                            name: 'noreply@celke.com.br',
                             host: "sandbox.smtp.mailtrap.io",
                             port: 2525,
                             secure: false, //true para port 465, false para outras ports
