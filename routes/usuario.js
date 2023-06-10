@@ -124,7 +124,6 @@ router.post('/recuperarsenha', (req, res, next) =>{
                         const transporter = nodemailer.createTransport({
                             host: "sandbox.smtp.mailtrap.io",
                             port: 2525,
-                            secure: true, //true para port 465, false para outras ports
                             auth: {
                                 user: "cc973a98c659db",
                                 pass: "c9bde3a313babf"
