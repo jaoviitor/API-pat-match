@@ -136,9 +136,9 @@ router.post('/recuperarsenha', (req, res, next) =>{
                             html: `<h1>Recupere sua senha inserindo o token na página de recuperação</h1> <p>${key}</p>`,
                             text: `Para recuperar sua senha, digite este token na página de redefinição: ${key}`
                         }
-                        transporter.sendMail(mailOptions, (err) =>{
+                        transporter.sendMail(mailOptions, (err, info) =>{
                             if(err) { return res.status(400).json({ erro: true, mensagem: "Erro: Email não enviado com sucesso" })}
-                            return res.json({ erro: false, mensagem: "Email enviado com sucesso!" })
+                            return res.json({ erro: false, mensagem: info.response })
                         });
                         if (error) { return res.status(500).send({ error: error })}
                         res.status(201).send({
