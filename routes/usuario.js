@@ -180,5 +180,21 @@ router.post('/recuperarsenha', (req, res, next) =>{
     })
 })
 
+//TROCAR SENHA NO BANCO
+router.post('/trocarsenha', (req, res, next) =>{
+    mysql.getConnection((error, conn) =>{
+        if (error) { return res.status(500).send({ error: error }) }
+        const query = `SELECT * FROM Usuario WHERE SenhaResetToken = ?`;
+        conn.query(query,[req.body.SenhaResetToken], (error, results, fields) =>{
+            conn.release();
+            if (error) { return res.status(500).send({ error: error }) }
+            if (results.length < 1){ //conferindo se o token está no banco
+                return res.status(401).send({ mensagem: 'Token inválido' });
+            }
+            return res.status(201).send({mensagem: 'autenticado com sucesso'});
+        })
+    })
+})
+
 
 module.exports = router;
