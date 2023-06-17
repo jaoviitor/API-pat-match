@@ -90,7 +90,10 @@ router.post('/login', (req, res, next) =>{
                     })
                     return res.status(200).send({
                         mensagem: 'Autenticado com sucesso',
-						Id_Usuario: results[0].Id_Usuario,
+						Nome: results[0].Nome,
+                        Endereco: results[0].Endereco,
+                        Dt_Nascimento: results[0].Dt_Nascimento,
+                        Genero: results[0].Genero,
 						Email: results[0].Email,
                         token: token
                     });
