@@ -128,24 +128,49 @@ router.post('/recuperarsenha', (req, res, next) =>{
                     (error, results) =>{
                         conn.release();
                         const transporter = nodemailer.createTransport({
-                            host: "sandbox.smtp.mailtrap.io",
-                            port: 2525,
+                            host: process.env.HOST_MAIL,
+                            port: process.env.HOST_PORT,
                             auth: {
-                                user: "cc973a98c659db",
-                                pass: "c9bde3a313babf"
+                                user: process.env.HOST_USER,
+                                pass: process.env.HOST_PASS
                             }
                         });
-                        var mailOptions = {
-                            from: `PetMatch <noreply@celke.com.br>`,
-                            to: req.body.Email,
-                            subject: "Recuperação de senha",
-                            html: `<h1>Recupere sua senha inserindo o token na página de recuperação</h1> <p>${key}</p>`,
-                            text: `Para recuperar sua senha, digite este token na página de redefinição: ${key}`
+                        const sender = {
+                            name: 'PetMatch',
+                            email: 'noreply@petmatch.com'
                         }
-                        transporter.sendMail(mailOptions, (err, info) =>{
-                            if(err) { return res.status(400).json({ erro: true, mensagem: "Erro: Email não enviado com sucesso" })}
-                            return res.json({ erro: false, mensagem: info.response })
-                        });
+                        const receiver = {
+                            email: req.body.Email
+                        }
+                        const mailContent = {
+                            subject: 'Recuperação de senha',
+                            text: `Para recuperar sua senha, digite este token na página de redefinição: ${key}`,
+                            html: `<h1>Recupere sua senha inserindo o token na página de recuperação </h1> <p>${key}</p>`
+                        }
+
+                        async function sendMail(transporter, sender, receiver, mailContent){
+                            const mail = await transporter.sendMail({
+                                from: `"${sender.name}" ${sender.email}`,
+                                to: `${receiver.email}`,
+                                subject: `${mailContent.subject}`,
+                                text: `${mailContent.text}`,
+                                html: `${mailContent.html}`
+                            });
+
+                            console.log('Email enviado: ', mail.messageId);
+                            console.log('URL do Ethereal: ', nodemailer.getTestMessageUrl(mail));
+                        }
+
+                        async function mail(){
+                            try{
+                                await sendMail(transporter, sender, receiver, mailContent);
+                            } catch(error){
+                                console.log(error);
+                            }
+                        }
+
+                        mail();
+                        
                         if (error) { return res.status(500).send({ error: error })}
                         res.status(201).send({
                             mensagem: 'Operação realizada com sucesso!'
