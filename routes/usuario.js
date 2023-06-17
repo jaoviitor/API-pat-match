@@ -137,7 +137,7 @@ router.post('/recuperarsenha', (req, res, next) =>{
                         });
                         const sender = {
                             name: 'PetMatch',
-                            email: 'tessie.oberbrunner90@ethereal.email'
+                            email: 'joao.vitor.dev@outlook.com'
                         }
                         const receiver = {
                             email: req.body.Email
