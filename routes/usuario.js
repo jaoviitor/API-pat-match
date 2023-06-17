@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
 const nodemailer = require('nodemailer');
+const moment = require('moment');
 
 //RETORNA TODOS OS USUÁRIOS
 router.get('/', (req, res, next) =>{
@@ -71,6 +72,8 @@ router.post('/login', (req, res, next) =>{
         const query = `SELECT * FROM Usuario WHERE Email = ?`;
         conn.query(query,[req.body.Email], (error, results, fields) =>{
             conn.release();
+            const dataRecebida = results[0].Dt_Nascimento;
+            const dataFormatada = moment(dataRecebida).format('DD/MM/YYYY');
             if (error) { return res.status(500).send({ error: error }) }
             if (results.length < 1){ //conferindo se o email está no banco
                 return res.status(401).send({ mensagem: 'Falha na autenticação' });
@@ -92,7 +95,7 @@ router.post('/login', (req, res, next) =>{
                         mensagem: 'Autenticado com sucesso',
 						Nome: results[0].Nome,
                         Endereco: results[0].Endereco,
-                        Dt_Nascimento: results[0].Dt_Nascimento,
+                        Dt_Nascimento: dataFormatada,
                         Genero: results[0].Genero,
 						Email: results[0].Email,
                         token: token
